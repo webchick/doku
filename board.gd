@@ -29,6 +29,8 @@ func _on_cell_state_changed(cell):
 	if cell.state == cell.CellState.YES:
 		if has_row_or_column_conflict(cell):
 			print("INVALID: another YES exists in this row / column")
+		if has_adjacent_conflict(cell):
+			print("INVALID: another YES exists too close by... NO TOUCHING.")
 	print(
 		"Cell changed: ",
 		cell.grid_row,
@@ -38,7 +40,8 @@ func _on_cell_state_changed(cell):
 		cell.state
 	)
 
-func has_row_or_column_conflict(cell):
+# Only one yes per row / column.
+func has_row_or_column_conflict(cell) -> bool:
 
 	# First, check for duplicate yeses in the same row.
 	for col in range(board_columns):
@@ -50,5 +53,33 @@ func has_row_or_column_conflict(cell):
 		if board[row][cell.grid_col].state == cell.CellState.YES && row != cell.grid_row:
 			return true
 
-	# If we get here, no conflict.
+	# If we make it down here, we're good.
+	return false
+
+# A yes can't touch any other yes.
+func has_adjacent_conflict(cell) -> bool:
+	for row_offset in range(-1, 2):
+		for col_offset in range(-1, 2):
+
+			# Skip the cell itself.
+			if row_offset == 0 and col_offset == 0:
+				continue
+
+			var check_row = cell.grid_row + row_offset
+			var check_col = cell.grid_col + col_offset
+	
+			# Check for out of range values.
+			if (
+				check_row < 0
+				or check_row >= board_rows
+				or check_col < 0
+				or check_col >= board_columns
+			):
+				continue
+	
+			# See if neighbouring cells are also yes.
+			if board[check_row][check_col].state == cell.CellState.YES:
+				return true
+	
+	# If we make it down here, we're good.
 	return false
