@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bb5gpfs6681sg" path="res://cell.gd" id="1_yh0nt"]
 
 [node name="Cell" type="Button" unique_id=584129466]
+custom_minimum_size = Vector2(100, 100)
 offset_right = 8.0
 offset_bottom = 8.0
 script = ExtResource("1_yh0nt")
