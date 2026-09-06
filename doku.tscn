@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://cbbyj5020f75g"]
 
+[ext_resource type="Script" uid="uid://bb5gpfs6681sg" path="res://cell.gd" id="1_4jie0"]
+
 [node name="Game" type="Control" unique_id=2129302372]
 layout_mode = 3
 anchors_preset = 0
@@ -40,6 +42,7 @@ rotation = -0.0020124654
 layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
+script = ExtResource("1_4jie0")
 
 [node name="XMark" type="Label" parent="Cell" unique_id=44967117]
 visible = false
