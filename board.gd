@@ -4,6 +4,13 @@ extends GridContainer
 @export var board_rows: int = 4
 @export var board_columns: int = 4
 
+enum ConflictType {
+	ROW,
+	COLUMN,
+	REGION,
+	ADJACENT
+}
+
 var board: Array = []
 var cell_scene = preload("res://cell.tscn")
 var region_map = [
@@ -33,9 +40,8 @@ func _ready() -> void:
 		board.append(row_data)
 
 func _on_cell_state_changed(cell):
-	if cell.state == cell.CellState.YES:
-		if not is_yes_placement_valid(cell):
-			print("INVALID: BZZZT try again")
+	update_validation(cell)
+
 	print(
 		"Cell changed: ",
 		cell.grid_row,
@@ -45,22 +51,38 @@ func _on_cell_state_changed(cell):
 		cell.state
 	)
 
-func is_yes_placement_valid(cell) -> bool:
-	return (
-		not has_row_or_column_conflict(cell)
-		and not has_adjacent_conflict(cell)
-		and not has_region_conflict(cell)
-	)
+func get_conflicts(cell) -> Array[String]:
+	var conflicts: Array[String] = []
 
-# Only one yes per row / column.
-func has_row_or_column_conflict(cell) -> bool:
+	# Only YES placements participate in these rules.
+	if cell.state != cell.CellState.YES:
+		return conflicts
 
-	# First, check for duplicate yeses in the same row.
+	if has_row_conflict(cell):
+		conflicts.append("row")
+
+	if has_column_conflict(cell):
+		conflicts.append("column")
+
+	if has_region_conflict(cell):
+		conflicts.append("region")
+
+	if has_adjacent_conflict(cell):
+		conflicts.append("adjacent")
+
+	return conflicts
+
+# Only one yes per row.
+func has_row_conflict(cell) -> bool:
 	for col in range(board_columns):
 		if board[cell.grid_row][col].state == cell.CellState.YES && col != cell.grid_col:
 			return true
 
-	# Next, check for duplicate yeses in the same column.
+	# If we make it down here, we're good.
+	return false
+
+# Only one yes per column.
+func has_column_conflict(cell) -> bool:
 	for row in range(board_rows):
 		if board[row][cell.grid_col].state == cell.CellState.YES && row != cell.grid_row:
 			return true
@@ -108,3 +130,20 @@ func has_region_conflict(cell) -> bool:
 				return true
 
 	return false
+
+# Each time a cell is clicked, indicate whether it's valid or not.
+func update_validation(changed_cell):
+	# The changed cell may become invalid OR become valid again.
+	var conflicts = get_conflicts(changed_cell)
+	changed_cell.is_invalid = conflicts.size() > 0
+	changed_cell.update_display()
+
+	# Previously-invalid cells may clear if their conflict disappeared.
+	for row in board:
+		for cell in row:
+			if cell == changed_cell:
+				continue
+
+			if cell.is_invalid and get_conflicts(cell).is_empty():
+				cell.is_invalid = false
+				cell.update_display()

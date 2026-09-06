@@ -15,6 +15,7 @@ var state: CellState = CellState.BLANK
 var grid_row: int
 var grid_col: int
 var region_id: int = -1
+var is_invalid: bool = false
 
 signal state_changed(cell)
 
@@ -42,3 +43,8 @@ func _on_pressed():
 func update_display():
 	x_mark.visible = state == CellState.NO
 	o_mark.visible = state == CellState.YES
+
+	if is_invalid:
+		modulate = Color(1.0, 0.5, 0.5)
+	else:
+		modulate = Color.WHITE
