@@ -1,4 +1,12 @@
 extends GutTest
+
+const REGION_MAP = [
+	[0, 0, 1, 1],
+	[0, 2, 2, 1],
+	[3, 2, 2, 1],
+	[3, 3, 3, 1]
+]
+
 var board_scene = preload("res://doku.tscn")
 
 func test_board_creates_16_cells():
@@ -7,61 +15,37 @@ func test_board_creates_16_cells():
 
 	var board = game.get_node("Board")
 
-	assert_eq(board.board.size(), 4)
-	assert_eq(board.board[0].size(), 4)
+	assert_eq(board.puzzle_board.board.size(), 4)
+	assert_eq(board.puzzle_board.board[0].size(), 4)
 
 func test_row_conflict():
-	var game = board_scene.instantiate()
-	add_child_autofree(game)
+	var puzzle = PuzzleBoard.new(4, 4, REGION_MAP)
 
-	var board = game.get_node("Board")
+	puzzle.board[0][0].state = CellData.CellState.YES
+	puzzle.board[0][2].state = CellData.CellState.YES
 
-	var first = board.board[0][0]
-	var second = board.board[0][2]
-
-	first.state = first.CellState.YES
-	second.state = second.CellState.YES
-
-	assert_true(board.has_row_conflict(second))
+	assert_true(puzzle.has_row_conflict(puzzle.board[0][2]))
 
 func test_column_conflict():
-	var game = board_scene.instantiate()
-	add_child_autofree(game)
+	var puzzle = PuzzleBoard.new(4, 4, REGION_MAP)
 
-	var board = game.get_node("Board")
+	puzzle.board[0][0].state = CellData.CellState.YES
+	puzzle.board[2][0].state = CellData.CellState.YES
 
-	var first = board.board[0][0]
-	var second = board.board[2][0]
-
-	first.state = first.CellState.YES
-	second.state = second.CellState.YES
-
-	assert_true(board.has_column_conflict(second))
+	assert_true(puzzle.has_column_conflict(puzzle.board[2][0]))
 
 func test_region_conflict():
-	var game = board_scene.instantiate()
-	add_child_autofree(game)
+	var puzzle = PuzzleBoard.new(4, 4, REGION_MAP)
 
-	var board = game.get_node("Board")
+	puzzle.board[0][2].state = CellData.CellState.YES
+	puzzle.board[2][3].state = CellData.CellState.YES
 
-	var first = board.board[0][2]
-	var second = board.board[2][3]
+	assert_true(puzzle.has_region_conflict(puzzle.board[2][3]))
 
-	first.state = first.CellState.YES
-	second.state = second.CellState.YES
-
-	assert_true(board.has_region_conflict(second))
-	
 func test_diagonal_adjacency_conflict():
-	var game = board_scene.instantiate()
-	add_child_autofree(game)
+	var puzzle = PuzzleBoard.new(4, 4, REGION_MAP)
 
-	var board = game.get_node("Board")
+	puzzle.board[1][1].state = CellData.CellState.YES
+	puzzle.board[2][2].state = CellData.CellState.YES
 
-	var first = board.board[1][1]
-	var second = board.board[2][2]
-
-	first.state = first.CellState.YES
-	second.state = second.CellState.YES
-
-	assert_true(board.has_adjacent_conflict(second))
+	assert_true(puzzle.has_adjacent_conflict(puzzle.board[2][2]))

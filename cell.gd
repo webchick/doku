@@ -1,21 +1,9 @@
 extends Button
 
-# Only three valid cell states; default to blank.
-enum CellState {
-	BLANK,
-	NO,
-	YES
-}
-
-var state: CellState = CellState.BLANK
+var data: CellData
 
 @onready var x_mark: Label = $XMark
 @onready var o_mark: Label = $OMark
-
-var grid_row: int
-var grid_col: int
-var region_id: int = -1
-var is_invalid: bool = false
 
 signal state_changed(cell)
 
@@ -26,25 +14,25 @@ func _ready() -> void:
 
 # Cycle through states on press.
 func _on_pressed():
-	match state:
-		CellState.BLANK:
-			state = CellState.NO
+	match data.state:
+		data.CellState.BLANK:
+			data.state = CellData.CellState.NO
 
-		CellState.NO:
-			state = CellState.YES
+		data.CellState.NO:
+			data.state = CellData.CellState.YES
 
-		CellState.YES:
-			state = CellState.BLANK
+		data.CellState.YES:
+			data.state = CellData.CellState.BLANK
 
 	update_display()
 	state_changed.emit(self)
 
 # Toggle visibility based on state.
 func update_display():
-	x_mark.visible = state == CellState.NO
-	o_mark.visible = state == CellState.YES
+	x_mark.visible = data.state == CellData.CellState.NO
+	o_mark.visible = data.state == CellData.CellState.YES
 
-	if is_invalid:
+	if data.is_invalid:
 		modulate = Color(1.0, 0.5, 0.5)
 	else:
 		modulate = Color.WHITE
