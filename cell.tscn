@@ -14,6 +14,7 @@ offset_right = 40.0
 offset_bottom = 23.0
 text = "X"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="OMark" type="Label" parent="." unique_id=866709139]
 layout_mode = 0
@@ -21,3 +22,4 @@ offset_right = 40.0
 offset_bottom = 23.0
 text = "O"
 horizontal_alignment = 1
+vertical_alignment = 1
