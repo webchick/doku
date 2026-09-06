@@ -1,6 +1,6 @@
 extends GridContainer
 
-# "columns" is a reserved word; wrap it with board concept.
+# GridContainer already has a built-in "columns" property.
 @export var board_rows: int = 4
 @export var board_columns: int = 4
 
@@ -26,6 +26,9 @@ func _ready() -> void:
 		board.append(row_data)
 
 func _on_cell_state_changed(cell):
+	if cell.state == cell.CellState.YES:
+		if has_row_or_column_conflict(cell):
+			print("INVALID: another YES exists in this row / column")
 	print(
 		"Cell changed: ",
 		cell.grid_row,
@@ -34,3 +37,18 @@ func _on_cell_state_changed(cell):
 		" state=",
 		cell.state
 	)
+
+func has_row_or_column_conflict(cell):
+
+	# First, check for duplicate yeses in the same row.
+	for col in range(board_columns):
+		if board[cell.grid_row][col].state == cell.CellState.YES && col != cell.grid_col:
+			return true
+
+	# Next, check for duplicate yeses in the same column.
+	for row in range(board_rows):
+		if board[row][cell.grid_col].state == cell.CellState.YES && row != cell.grid_row:
+			return true
+
+	# If we get here, no conflict.
+	return false
