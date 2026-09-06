@@ -6,6 +6,12 @@ extends GridContainer
 
 var board: Array = []
 var cell_scene = preload("res://cell.tscn")
+var region_map = [
+	[0, 0, 1, 1],
+	[0, 2, 2, 1],
+	[3, 2, 2, 1],
+	[3, 3, 3, 1]
+]
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -20,6 +26,7 @@ func _ready() -> void:
 			cell.state_changed.connect(_on_cell_state_changed)
 			cell.grid_row = row
 			cell.grid_col = col
+			cell.region_id = region_map[row][col]
 			row_data.append(cell)
 			add_child(cell)
 
@@ -27,10 +34,8 @@ func _ready() -> void:
 
 func _on_cell_state_changed(cell):
 	if cell.state == cell.CellState.YES:
-		if has_row_or_column_conflict(cell):
-			print("INVALID: another YES exists in this row / column")
-		if has_adjacent_conflict(cell):
-			print("INVALID: another YES exists too close by... NO TOUCHING.")
+		if not is_yes_placement_valid(cell):
+			print("INVALID: BZZZT try again")
 	print(
 		"Cell changed: ",
 		cell.grid_row,
@@ -38,6 +43,13 @@ func _on_cell_state_changed(cell):
 		cell.grid_col,
 		" state=",
 		cell.state
+	)
+
+func is_yes_placement_valid(cell) -> bool:
+	return (
+		not has_row_or_column_conflict(cell)
+		and not has_adjacent_conflict(cell)
+		and not has_region_conflict(cell)
 	)
 
 # Only one yes per row / column.
@@ -82,4 +94,17 @@ func has_adjacent_conflict(cell) -> bool:
 				return true
 	
 	# If we make it down here, we're good.
+	return false
+
+# Also can't repeat a yes within the same regional boundary.
+func has_region_conflict(cell) -> bool:
+	for row in board:
+		for other_cell in row:
+			if (
+				other_cell != cell
+				and other_cell.region_id == cell.region_id
+				and other_cell.state == cell.CellState.YES
+			):
+				return true
+
 	return false
