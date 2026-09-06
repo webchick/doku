@@ -15,6 +15,8 @@ var state: CellState = CellState.BLANK
 var grid_row: int
 var grid_col: int
 
+signal state_changed(cell)
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pressed.connect(_on_pressed)
@@ -33,7 +35,7 @@ func _on_pressed():
 			state = CellState.BLANK
 
 	update_display()
-	print("clicked:", grid_row, ",", grid_col)
+	state_changed.emit(self)
 
 # Toggle visibility based on state.
 func update_display():
