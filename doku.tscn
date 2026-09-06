@@ -8,6 +8,7 @@ anchors_preset = 0
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+rotation = -0.15801997
 
 [node name="GameInfo" type="Control" parent="." unique_id=906659252]
 anchors_preset = 0
@@ -15,6 +16,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Timer" type="Timer" parent="GameInfo" unique_id=410576448]
+autostart = true
 
 [node name="TimerLabel" type="Label" parent="GameInfo" unique_id=293844449]
 layout_mode = 0
@@ -33,3 +35,24 @@ offset_bottom = 8.0
 rotation = -0.0020124654
 
 [node name="CompletionPopup" type="Popup" parent="." unique_id=691308928]
+
+[node name="Cell" type="Button" parent="." unique_id=136371172]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="XMark" type="Label" parent="Cell" unique_id=44967117]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "X"
+horizontal_alignment = 1
+
+[node name="OMark" type="Label" parent="Cell" unique_id=2065133780]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "O"
+horizontal_alignment = 1
