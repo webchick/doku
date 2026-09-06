@@ -1,3 +1,6 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Godot addons (third-party plugins, not project source)
+/addons/
