@@ -12,6 +12,9 @@ var state: CellState = CellState.BLANK
 @onready var x_mark: Label = $XMark
 @onready var o_mark: Label = $OMark
 
+var grid_row: int
+var grid_col: int
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pressed.connect(_on_pressed)
@@ -30,6 +33,7 @@ func _on_pressed():
 			state = CellState.BLANK
 
 	update_display()
+	print("clicked:", grid_row, ",", grid_col)
 
 # Toggle visibility based on state.
 func update_display():

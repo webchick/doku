@@ -14,4 +14,6 @@ func _ready() -> void:
 	for row in range(board_rows):
 		for column in range(board_columns):
 			var cell = cell_scene.instantiate()
+			cell.grid_row = row
+			cell.grid_col = column
 			add_child(cell)
