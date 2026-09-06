@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://dtwi58h4jwq77"]
+
+[ext_resource type="Script" uid="uid://bb5gpfs6681sg" path="res://cell.gd" id="1_yh0nt"]
+
+[node name="Cell" type="Button" unique_id=584129466]
+offset_right = 8.0
+offset_bottom = 8.0
+script = ExtResource("1_yh0nt")
+
+[node name="XMark" type="Label" parent="." unique_id=1792206429]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "X"
+horizontal_alignment = 1
+
+[node name="OMark" type="Label" parent="." unique_id=866709139]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "O"
+horizontal_alignment = 1

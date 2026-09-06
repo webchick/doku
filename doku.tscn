@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cbbyj5020f75g"]
 
-[ext_resource type="Script" uid="uid://bb5gpfs6681sg" path="res://cell.gd" id="1_4jie0"]
+[ext_resource type="PackedScene" uid="uid://dtwi58h4jwq77" path="res://cell.tscn" id="1_4jie0"]
 
 [node name="Game" type="Control" unique_id=2129302372]
 layout_mode = 3
@@ -37,25 +37,18 @@ offset_bottom = 8.0
 rotation = -0.0020124654
 
 [node name="CompletionPopup" type="Popup" parent="." unique_id=691308928]
+oversampling_override = 1.0
+visible = true
 
-[node name="Cell" type="Button" parent="." unique_id=136371172]
+[node name="Cell" parent="." unique_id=584129466 instance=ExtResource("1_4jie0")]
+custom_minimum_size = Vector2(100, 100)
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-script = ExtResource("1_4jie0")
+rotation = -0.00052531186
 
-[node name="XMark" type="Label" parent="Cell" unique_id=44967117]
-visible = false
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-text = "X"
-horizontal_alignment = 1
+[node name="XMark" parent="Cell" index="0" unique_id=1792206429]
+visible = true
 
-[node name="OMark" type="Label" parent="Cell" unique_id=2065133780]
-visible = false
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-text = "O"
-horizontal_alignment = 1
+[node name="OMark" parent="Cell" index="1" unique_id=866709139]
+visible = true
+
+[editable path="Cell"]

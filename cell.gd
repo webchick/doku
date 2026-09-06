@@ -17,10 +17,6 @@ func _ready() -> void:
 	pressed.connect(_on_pressed)
 	update_display()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
 # Cycle through states on press.
 func _on_pressed():
 	match state:
@@ -35,7 +31,7 @@ func _on_pressed():
 
 	update_display()
 
-# Toggle visibility based on cell state.
+# Toggle visibility based on state.
 func update_display():
 	x_mark.visible = state == CellState.NO
 	o_mark.visible = state == CellState.YES
