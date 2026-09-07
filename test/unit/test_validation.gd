@@ -18,6 +18,28 @@ func test_board_creates_16_cells():
 	assert_eq(board.puzzle_board.board.size(), board.board_rows)
 	assert_eq(board.puzzle_board.board[0].size(), board.board_columns)
 
+func test_update_validation_flags_both_cells_in_a_conflict():
+	var game = board_scene.instantiate()
+	add_child_autofree(game)
+
+	var board = game.get_node("MainLayout/Board")
+	var cell_a = board.puzzle_board.board[0][0]
+	var cell_b = board.puzzle_board.board[0][1]
+
+	# A lone YES is fine on its own...
+	cell_a.state = CellData.CellState.YES
+	board.update_validation(cell_a)
+
+	assert_false(cell_a.is_invalid)
+
+	# ...but placing an adjacent YES makes BOTH cells part of the conflict,
+	# not just the one that was just placed.
+	cell_b.state = CellData.CellState.YES
+	board.update_validation(cell_b)
+
+	assert_true(cell_a.is_invalid)
+	assert_true(cell_b.is_invalid)
+
 func test_row_conflict():
 	var puzzle = PuzzleBoard.new(4, 4, REGION_MAP)
 

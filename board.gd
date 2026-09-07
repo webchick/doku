@@ -1,8 +1,8 @@
 extends GridContainer
 
 # GridContainer already has a built-in "columns" property.
-@export var board_rows: int = 8
-@export var board_columns: int = 8
+@export var board_rows: int = 4
+@export var board_columns: int = 4
 @onready var conflict_label: Label = $"../GameInfo/ConflictLabel"
 
 var cell_scene = preload("res://cell.tscn")
@@ -40,16 +40,19 @@ func _on_cell_state_changed(cell):
 
 # Each time a cell is clicked, indicate whether it's valid or not.
 func update_validation(changed_cell: CellData):
-	# The changed cell may become invalid OR become valid again.
-	var conflicts = puzzle_board.get_conflicts(changed_cell)
-	changed_cell.is_invalid = conflicts.size() > 0
-
-	# Start fresh for THIS move.
-	var messages: Array[String] = []
+	# This move may have made other cells newly invalid (e.g. a cell that
+	# was a lone YES now has a neighbor), or cleared an existing conflict --
+	# so recompute every cell's validity from scratch rather than just the
+	# one that changed.
+	for row in puzzle_board.board:
+		for cell in row:
+			cell.is_invalid = not puzzle_board.get_conflicts(cell).is_empty()
 
 	# Show feedback for the move that was just made.
+	var messages: Array[String] = []
+
 	if changed_cell.is_invalid:
-		for conflict in conflicts:
+		for conflict in puzzle_board.get_conflicts(changed_cell):
 			match conflict:
 				PuzzleBoard.ConflictType.ROW:
 					messages.append("MY row!")
@@ -61,15 +64,6 @@ func update_validation(changed_cell: CellData):
 					messages.append("MY region!")
 
 	conflict_label.text = "\n".join(messages)
-
-	# Previously-invalid cells may clear if their conflict disappeared.
-	for row in puzzle_board.board:
-		for cell in row:
-			if cell == changed_cell:
-				continue
-
-			if cell.is_invalid and puzzle_board.get_conflicts(cell).is_empty():
-				cell.is_invalid = false
 
 	# Data changed; refresh every visual cell to match.
 	for child in get_children():

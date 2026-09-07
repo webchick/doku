@@ -63,11 +63,20 @@ func update_borders():
 	var style = StyleBoxFlat.new()
 
 	style.bg_color = get_region_color(data.region_id)
-	style.border_color = Color("#333333")
 
-	style.border_width_top = get_border_width(PuzzleBoard.Edge.TOP)
-	style.border_width_right = get_border_width(PuzzleBoard.Edge.RIGHT)
-	style.border_width_bottom = get_border_width(PuzzleBoard.Edge.BOTTOM)
-	style.border_width_left = get_border_width(PuzzleBoard.Edge.LEFT)
+	if data.is_invalid:
+		# A solid red outline reads as "wrong" regardless of the region's
+		# own pastel color, unlike the modulate tint alone.
+		style.border_color = Color("#d32f2f")
+		style.border_width_top = 4
+		style.border_width_right = 4
+		style.border_width_bottom = 4
+		style.border_width_left = 4
+	else:
+		style.border_color = Color("#333333")
+		style.border_width_top = get_border_width(PuzzleBoard.Edge.TOP)
+		style.border_width_right = get_border_width(PuzzleBoard.Edge.RIGHT)
+		style.border_width_bottom = get_border_width(PuzzleBoard.Edge.BOTTOM)
+		style.border_width_left = get_border_width(PuzzleBoard.Edge.LEFT)
 
 	background.add_theme_stylebox_override("panel", style)
