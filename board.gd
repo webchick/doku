@@ -37,15 +37,6 @@ func _ready() -> void:
 func _on_cell_state_changed(cell):
 	update_validation(cell.data)
 
-	print(
-		"Cell changed: ",
-		cell.data.grid_row,
-		",",
-		cell.data.grid_col,
-		" state=",
-		cell.data.state
-	)
-
 # Each time a cell is clicked, indicate whether it's valid or not.
 func update_validation(changed_cell: CellData):
 	# The changed cell may become invalid OR become valid again.
