@@ -31,8 +31,8 @@ func _init(p_rows: int, p_columns: int, regions: Array):
 		board.append(row_data)
 
 
-# Only one yes per row.
-func has_row_conflict(cell: CellData) -> bool:
+# At most one YES per row. A row with zero YESes is still valid mid-play.
+func is_row_valid(cell: CellData) -> bool:
 	for col in range(columns):
 		var other_cell = board[cell.grid_row][col]
 
@@ -40,13 +40,12 @@ func has_row_conflict(cell: CellData) -> bool:
 			other_cell != cell
 			and other_cell.state == CellData.CellState.YES
 		):
-			return true
+			return false
 
-	# If we make it down here, we're good.
-	return false
+	return true
 
-# Only one yes per column.
-func has_column_conflict(cell: CellData) -> bool:
+# At most one YES per column.
+func is_column_valid(cell: CellData) -> bool:
 	for row in range(rows):
 		var other_cell = board[row][cell.grid_col]
 
@@ -54,13 +53,12 @@ func has_column_conflict(cell: CellData) -> bool:
 			other_cell != cell
 			and other_cell.state == CellData.CellState.YES
 		):
-			return true
+			return false
 
-	# If we make it down here, we're good.
-	return false
+	return true
 
-# A yes can't touch any other yes.
-func has_adjacent_conflict(cell: CellData) -> bool:
+# A YES can't touch any other YES.
+func is_adjacency_valid(cell: CellData) -> bool:
 	for row_offset in range(-1, 2):
 		for col_offset in range(-1, 2):
 
@@ -82,13 +80,12 @@ func has_adjacent_conflict(cell: CellData) -> bool:
 
 			# See if neighbouring cells are also yes.
 			if board[check_row][check_col].state == CellData.CellState.YES:
-				return true
+				return false
 
-	# If we make it down here, we're good.
-	return false
+	return true
 
-# Also can't repeat a yes within the same regional boundary.
-func has_region_conflict(cell: CellData) -> bool:
+# At most one YES within the same regional boundary.
+func is_region_valid(cell: CellData) -> bool:
 	for row in board:
 		for other_cell in row:
 			if (
@@ -96,9 +93,9 @@ func has_region_conflict(cell: CellData) -> bool:
 				and other_cell.region_id == cell.region_id
 				and other_cell.state == CellData.CellState.YES
 			):
-				return true
+				return false
 
-	return false
+	return true
 
 func get_conflicts(cell: CellData) -> Array[ConflictType]:
 	var conflicts: Array[ConflictType] = []
@@ -107,16 +104,83 @@ func get_conflicts(cell: CellData) -> Array[ConflictType]:
 	if cell.state != CellData.CellState.YES:
 		return conflicts
 
-	if has_row_conflict(cell):
+	if not is_row_valid(cell):
 		conflicts.append(ConflictType.ROW)
 
-	if has_column_conflict(cell):
+	if not is_column_valid(cell):
 		conflicts.append(ConflictType.COLUMN)
 
-	if has_region_conflict(cell):
+	if not is_region_valid(cell):
 		conflicts.append(ConflictType.REGION)
 
-	if has_adjacent_conflict(cell):
+	if not is_adjacency_valid(cell):
 		conflicts.append(ConflictType.ADJACENT)
 
 	return conflicts
+
+# Every row must contain exactly one YES.
+func all_rows_complete() -> bool:
+	for row in board:
+		var yes_count := 0
+
+		for cell in row:
+			if cell.state == CellData.CellState.YES:
+				yes_count += 1
+
+		if yes_count != 1:
+			return false
+
+	return true
+
+# Every column must contain exactly one YES.
+func all_columns_complete() -> bool:
+	for col in range(columns):
+		var yes_count := 0
+
+		for row in range(rows):
+			if board[row][col].state == CellData.CellState.YES:
+				yes_count += 1
+
+		if yes_count != 1:
+			return false
+
+	return true
+
+# Every region must contain exactly one YES.
+func all_regions_complete() -> bool:
+	var region_ids := {}
+
+	for row in region_map:
+		for id in row:
+			region_ids[id] = true
+
+	for region_id in region_ids:
+		var yes_count := 0
+
+		for row in board:
+			for cell in row:
+				if cell.region_id == region_id and cell.state == CellData.CellState.YES:
+					yes_count += 1
+
+		if yes_count != 1:
+			return false
+
+	return true
+
+# No YES touches another YES anywhere on the board.
+func board_has_valid_adjacency() -> bool:
+	for row in board:
+		for cell in row:
+			if cell.state == CellData.CellState.YES and not is_adjacency_valid(cell):
+				return false
+
+	return true
+
+# valid = nothing is broken yet; solved = everything required is present.
+func is_solved() -> bool:
+	return (
+		all_rows_complete()
+		and all_columns_complete()
+		and all_regions_complete()
+		and board_has_valid_adjacency()
+	)

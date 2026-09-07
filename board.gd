@@ -73,3 +73,6 @@ func update_validation(changed_cell: CellData):
 	# Data changed; refresh every visual cell to match.
 	for child in get_children():
 		child.update_display()
+
+	if puzzle_board.is_solved():
+		conflict_label.text = "Solved!"
