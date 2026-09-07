@@ -3,6 +3,7 @@ extends GridContainer
 # GridContainer already has a built-in "columns" property.
 @export var board_rows: int = 4
 @export var board_columns: int = 4
+@onready var conflict_label: Label = $"../GameInfo/ConflictLabel"
 
 var cell_scene = preload("res://cell.tscn")
 var puzzle_board: PuzzleBoard
@@ -50,6 +51,24 @@ func update_validation(changed_cell: CellData):
 	# The changed cell may become invalid OR become valid again.
 	var conflicts = puzzle_board.get_conflicts(changed_cell)
 	changed_cell.is_invalid = conflicts.size() > 0
+
+	# Start fresh for THIS move.
+	var messages: Array[String] = []
+
+	# Show feedback for the move that was just made.
+	if changed_cell.is_invalid:
+		for conflict in conflicts:
+			match conflict:
+				PuzzleBoard.ConflictType.ROW:
+					messages.append("MY row!")
+				PuzzleBoard.ConflictType.COLUMN:
+					messages.append("MY column!")
+				PuzzleBoard.ConflictType.ADJACENT:
+					messages.append("NO TOUCHING!")
+				PuzzleBoard.ConflictType.REGION:
+					messages.append("MY region!")
+
+	conflict_label.text = "\n".join(messages)
 
 	# Previously-invalid cells may clear if their conflict disappeared.
 	for row in puzzle_board.board:

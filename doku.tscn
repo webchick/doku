@@ -6,34 +6,36 @@
 layout_mode = 3
 anchors_preset = 0
 
-[node name="Board" type="GridContainer" parent="." unique_id=1706307681]
+[node name="MainLayout" type="VBoxContainer" parent="." unique_id=585354563]
 layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Board" type="GridContainer" parent="MainLayout" unique_id=1706307681]
+layout_mode = 2
+size_flags_vertical = 3
 columns = 4
 script = ExtResource("1_i7e38")
 
-[node name="GameInfo" type="Control" parent="." unique_id=906659252]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="GameInfo" type="VBoxContainer" parent="MainLayout" unique_id=1902647969]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
 
-[node name="Timer" type="Timer" parent="GameInfo" unique_id=410576448]
+[node name="ConflictLabel" type="Label" parent="MainLayout/GameInfo" unique_id=266922691]
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="TimerLabel" type="Label" parent="MainLayout/GameInfo" unique_id=293844449]
+layout_mode = 2
+
+[node name="Lives" type="Control" parent="MainLayout/GameInfo" unique_id=1161764724]
+layout_mode = 2
+
+[node name="MenuButton" type="Button" parent="MainLayout/GameInfo" unique_id=1056931659]
+layout_mode = 2
+
+[node name="Timer" type="Timer" parent="MainLayout/GameInfo" unique_id=410576448]
 autostart = true
-
-[node name="TimerLabel" type="Label" parent="GameInfo" unique_id=293844449]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-
-[node name="Lives" type="Control" parent="GameInfo" unique_id=1161764724]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="MenuButton" type="Button" parent="GameInfo" unique_id=1056931659]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
-rotation = -0.0020124654
 
 [node name="CompletionPopup" type="Popup" parent="." unique_id=691308928]
 oversampling_override = 1.0
