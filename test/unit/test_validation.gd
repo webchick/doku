@@ -13,7 +13,7 @@ func test_board_creates_16_cells():
 	var game = board_scene.instantiate()
 	add_child_autofree(game)
 
-	var board = game.get_node("Board")
+	var board = game.get_node("MainLayout/Board")
 
 	assert_eq(board.puzzle_board.board.size(), 4)
 	assert_eq(board.puzzle_board.board[0].size(), 4)
