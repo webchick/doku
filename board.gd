@@ -10,7 +10,16 @@ var puzzle_board: PuzzleBoard
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	start_new_game(board_rows)
+
+# Builds a fresh board at the given size, replacing any existing one.
+func start_new_game(size: int) -> void:
+	board_rows = size
+	board_columns = size
 	columns = board_columns
+
+	for child in get_children():
+		child.queue_free()
 
 	var generator = PuzzleGenerator.new()
 	var puzzle_data = generator.generate_puzzle(board_rows)
@@ -30,6 +39,8 @@ func _ready() -> void:
 			cell.state_changed.connect(_on_cell_state_changed)
 
 			add_child(cell)
+
+	conflict_label.text = ""
 
 	# Let the grid settle its layout for the new board size before reading it.
 	await get_tree().process_frame

@@ -18,6 +18,26 @@ func test_board_creates_16_cells():
 	assert_eq(board.puzzle_board.board.size(), board.board_rows)
 	assert_eq(board.puzzle_board.board[0].size(), board.board_columns)
 
+func test_difficulty_menu_starts_a_new_sized_game():
+	var game = board_scene.instantiate()
+	add_child_autofree(game)
+
+	var main_layout = game.get_node("MainLayout")
+	var difficulty_menu = game.get_node("DifficultyMenu")
+	var board = game.get_node("MainLayout/Board")
+
+	assert_false(main_layout.visible)
+	assert_true(difficulty_menu.visible)
+
+	game.get_node("DifficultyMenu/VBoxContainer/HardButton").pressed.emit()
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+	assert_true(main_layout.visible)
+	assert_false(difficulty_menu.visible)
+	assert_eq(board.board_rows, 8)
+	assert_eq(board.puzzle_board.rows, 8)
+
 func test_update_validation_flags_both_cells_in_a_conflict():
 	var game = board_scene.instantiate()
 	add_child_autofree(game)
