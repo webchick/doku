@@ -113,3 +113,21 @@ func test_generated_solution_and_regions_form_a_solved_board():
 		puzzle.board[row][solution[row]].state = CellData.CellState.YES
 
 	assert_true(puzzle.is_solved())
+
+func test_generate_puzzle_returns_a_uniquely_solvable_region_map():
+	var generator = PuzzleGenerator.new()
+	var solver = PuzzleSolver.new()
+	var result = generator.generate_puzzle(4)
+	var puzzle = PuzzleBoard.new(4, 4, result.region_map)
+
+	assert_eq(solver.count_solutions(puzzle, 2), 1)
+
+func test_generate_puzzle_returns_a_solution_that_solves_its_own_region_map():
+	var generator = PuzzleGenerator.new()
+	var result = generator.generate_puzzle(4)
+	var puzzle = PuzzleBoard.new(4, 4, result.region_map)
+
+	for row in range(result.solution.size()):
+		puzzle.board[row][result.solution[row]].state = CellData.CellState.YES
+
+	assert_true(puzzle.is_solved())

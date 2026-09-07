@@ -8,21 +8,17 @@ extends GridContainer
 var cell_scene = preload("res://cell.tscn")
 var puzzle_board: PuzzleBoard
 
-var region_map = [
-	[0, 0, 1, 1],
-	[0, 2, 2, 1],
-	[3, 2, 2, 1],
-	[3, 3, 3, 1]
-]
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	columns = board_columns
 
+	var generator = PuzzleGenerator.new()
+	var puzzle_data = generator.generate_puzzle(board_rows)
+
 	puzzle_board = PuzzleBoard.new(
 		board_rows,
 		board_columns,
-		region_map
+		puzzle_data.region_map
 	)
 
 	for row in range(board_rows):
