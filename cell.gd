@@ -13,6 +13,7 @@ signal state_changed(cell)
 func _ready() -> void:
 	pressed.connect(_on_pressed)
 	update_display()
+	background.queue_redraw()
 
 # Cycle through states on press.
 func _on_pressed():

@@ -15,8 +15,8 @@ func test_board_creates_16_cells():
 
 	var board = game.get_node("MainLayout/Board")
 
-	assert_eq(board.puzzle_board.board.size(), 4)
-	assert_eq(board.puzzle_board.board[0].size(), 4)
+	assert_eq(board.puzzle_board.board.size(), board.board_rows)
+	assert_eq(board.puzzle_board.board[0].size(), board.board_columns)
 
 func test_row_conflict():
 	var puzzle = PuzzleBoard.new(4, 4, REGION_MAP)

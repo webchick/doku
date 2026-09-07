@@ -1,8 +1,8 @@
 extends GridContainer
 
 # GridContainer already has a built-in "columns" property.
-@export var board_rows: int = 4
-@export var board_columns: int = 4
+@export var board_rows: int = 8
+@export var board_columns: int = 8
 @onready var conflict_label: Label = $"../GameInfo/ConflictLabel"
 
 var cell_scene = preload("res://cell.tscn")
@@ -30,6 +30,10 @@ func _ready() -> void:
 			cell.state_changed.connect(_on_cell_state_changed)
 
 			add_child(cell)
+
+	# Let the grid settle its layout for the new board size before reading it.
+	await get_tree().process_frame
+	get_window().size = Vector2i(get_parent().get_combined_minimum_size())
 
 func _on_cell_state_changed(cell):
 	update_validation(cell.data)
