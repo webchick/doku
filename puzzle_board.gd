@@ -146,15 +146,19 @@ func all_columns_complete() -> bool:
 
 	return true
 
-# Every region must contain exactly one YES.
-func all_regions_complete() -> bool:
+# How many distinct regions the board is divided into.
+func region_count() -> int:
 	var region_ids := {}
 
 	for row in region_map:
 		for id in row:
 			region_ids[id] = true
 
-	for region_id in region_ids:
+	return region_ids.size()
+
+# Every region must contain exactly one YES.
+func all_regions_complete() -> bool:
+	for region_id in range(region_count()):
 		var yes_count := 0
 
 		for row in board:

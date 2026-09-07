@@ -42,18 +42,15 @@ func update_display():
 		modulate = Color.WHITE
 
 
+# Evenly spaces a pastel hue per region so the palette scales with however
+# many regions the board actually has, instead of running out of colors.
 func get_region_color(region_id: int) -> Color:
-	match region_id:
-		0:
-			return Color("#f7c6c7")
-		1:
-			return Color("#cfe8ff")
-		2:
-			return Color("#d9f2d0")
-		3:
-			return Color("#f5e7b2")
-		_:
-			return Color.WHITE
+	var total_regions = puzzle_board.region_count()
+
+	if total_regions <= 0:
+		return Color.WHITE
+
+	return Color.from_hsv(float(region_id) / total_regions, 0.3, 0.95)
 
 func get_border_width(edge: PuzzleBoard.Edge) -> int:
 	if puzzle_board.is_region_boundary(data, edge):
