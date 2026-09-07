@@ -1,7 +1,9 @@
 extends Button
 
+var puzzle_board: PuzzleBoard
 var data: CellData
 
+@onready var background: Panel = $Background
 @onready var x_mark: Label = $XMark
 @onready var o_mark: Label = $OMark
 
@@ -32,7 +34,42 @@ func update_display():
 	x_mark.visible = data.state == CellData.CellState.NO
 	o_mark.visible = data.state == CellData.CellState.YES
 
+	update_borders()
+
 	if data.is_invalid:
 		modulate = Color(1.0, 0.5, 0.5)
 	else:
 		modulate = Color.WHITE
+
+
+func get_region_color(region_id: int) -> Color:
+	match region_id:
+		0:
+			return Color("#f7c6c7")
+		1:
+			return Color("#cfe8ff")
+		2:
+			return Color("#d9f2d0")
+		3:
+			return Color("#f5e7b2")
+		_:
+			return Color.WHITE
+
+func get_border_width(edge: PuzzleBoard.Edge) -> int:
+	if puzzle_board.is_region_boundary(data, edge):
+		return 4
+
+	return 1
+
+func update_borders():
+	var style = StyleBoxFlat.new()
+
+	style.bg_color = get_region_color(data.region_id)
+	style.border_color = Color("#333333")
+
+	style.border_width_top = get_border_width(PuzzleBoard.Edge.TOP)
+	style.border_width_right = get_border_width(PuzzleBoard.Edge.RIGHT)
+	style.border_width_bottom = get_border_width(PuzzleBoard.Edge.BOTTOM)
+	style.border_width_left = get_border_width(PuzzleBoard.Edge.LEFT)
+
+	background.add_theme_stylebox_override("panel", style)

@@ -30,6 +30,7 @@ func _ready() -> void:
 			var cell = cell_scene.instantiate()
 
 			cell.data = puzzle_board.board[row][col]
+			cell.puzzle_board = puzzle_board
 			cell.state_changed.connect(_on_cell_state_changed)
 
 			add_child(cell)

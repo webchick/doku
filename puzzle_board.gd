@@ -184,3 +184,36 @@ func is_solved() -> bool:
 		and all_regions_complete()
 		and board_has_valid_adjacency()
 	)
+
+enum Edge {
+	TOP,
+	RIGHT,
+	BOTTOM,
+	LEFT
+}
+
+func is_region_boundary(cell: CellData, edge: Edge) -> bool:
+	var neighbor_row = cell.grid_row
+	var neighbor_col = cell.grid_col
+
+	match edge:
+		Edge.TOP:
+			neighbor_row -= 1
+		Edge.RIGHT:
+			neighbor_col += 1
+		Edge.BOTTOM:
+			neighbor_row += 1
+		Edge.LEFT:
+			neighbor_col -= 1
+
+	# Outside edge of the board.
+	if (
+		neighbor_row < 0
+		or neighbor_row >= rows
+		or neighbor_col < 0
+		or neighbor_col >= columns
+	):
+		return true
+
+	var neighbor = board[neighbor_row][neighbor_col]
+	return neighbor.region_id != cell.region_id
