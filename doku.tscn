@@ -18,7 +18,7 @@ columns = 4
 script = ExtResource("1_i7e38")
 
 [node name="GameInfo" type="VBoxContainer" parent="MainLayout" unique_id=1902647969]
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 160)
 layout_mode = 2
 
 [node name="ConflictLabel" type="Label" parent="MainLayout/GameInfo" unique_id=266922691]
